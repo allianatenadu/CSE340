@@ -1,6 +1,429 @@
-/******* Change Box Model ***************/
-*,
-*:before,
-*:after {
+/* Mobile First CSS - Base styles for mobile devices */
+
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: repeating-linear-gradient(
+    45deg,
+    #000,
+    #000 10px,
+    #fff 10px,
+    #fff 20px
+  );
+  min-height: 100vh;
+  padding: 10px;
+}
+
+#wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: white;
+  min-height: calc(100vh - 20px);
+  border: 3px solid #00bcd4;
+  position: relative;
+}
+
+/* Header Styles - WHITE BACKGROUND */
+#top-header {
+  background-color: #ffffff;
+  color: #000;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #ddd;
+}
+
+.siteName {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.siteName a {
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.siteName a:hover {
+  text-decoration: none;
+}
+
+#tools {
+  font-weight: bold;
+}
+
+#tools a {
+  color: #000;
+  text-decoration: none;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#tools a:hover {
+  text-decoration: none;
+}
+
+/* Navigation Styles - DARK BLUE/BLACK BACKGROUND, HORIZONTAL */
+nav {
+  background-color: #1a237e;
+  width: 100%;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+nav li {
+  flex: 1;
+  border-right: 1px solid #3949ab;
+}
+
+nav li:last-child {
+  border-right: none;
+}
+
+nav a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  padding: 15px 10px;
+  text-align: center;
+  transition: background-color 0.3s;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+nav a:hover {
+  background-color: #3949ab;
+  text-decoration: none;
+}
+
+/* Main Content */
+main {
+  padding: 20px;
+  background-color: white;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Hero Section */
+.hero {
+  margin-bottom: 30px;
+}
+
+
+.hero-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.hero-text {
+  background-color: rgba(255, 255, 255, 0.9); /* Transparent white */
+  padding: 20px;
+  border-radius: 10px;
+  position: absolute;
+  z-index: 2;
+  left: 180px;
+  max-width: 250px;
+}
+
+.hero-text h2 {
+  color: #00bcd4;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.hero-text ul {
+  margin: 10px 0;
+  padding-left: 20px;
+  color: #00bcd4;
+  list-style: disc;
+}
+
+.hero-text li {
+  margin-bottom: 5px;
+}
+
+.cta-button {
+  background-color: #00bcd4;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.cta-button:hover {
+  background-color: #008ba3;
+}
+
+.hero-image {
+  flex: 1;
+  text-align: right;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  max-height: 300px;
+}
+
+
+
+
+
+.hero-text h2 {
+  color: #00bcd4;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.hero-text ul {
+  margin: 15px 0;
+  padding-left: 20px;
+  list-style: disc;
+  color: #00bcd4;
+}
+
+.hero-text li {
+  margin-bottom: 5px;
+}
+
+
+
+.hero-image {
+  order: 1;
+  text-align: center;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  max-height: 200px;
+}
+
+/* Content Grid - Mobile: Stack vertically */
+.content-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Reviews Section */
+.reviews {
+  order: 2;
+}
+
+.reviews ul {
+  list-style: none;
+  padding: 0;
+}
+
+.reviews li {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.reviews li:before {
+  content: "• ";
+  color: #00bcd4;
+  font-weight: bold;
+}
+
+/* Upgrades Section */
+.upgrades {
+  order: 1;
+}
+
+.upgrade-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.upgrade-item {
+  text-align: center;
+  background-color: #00bcd4;
+  padding: 15px;
+  border-radius: 8px;
+  transition: transform 0.3s;
+}
+
+.upgrade-item:hover {
+  transform: translateY(-2px);
+}
+
+.upgrade-item a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.upgrade-item a:hover {
+  text-decoration: none;
+}
+
+.upgrade-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background-color: white;
+  padding: 5px;
+}
+
+.upgrade-item span {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* Footer */
+footer {
+  background-color: #f5f5f5;
+  color: #333;
+  text-align: center;
+  padding: 15px;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+  font-size: 0.85rem;
+}
+
+/* Media Queries for Larger Screens */
+@media screen and (min-width: 768px) {
+  body {
+    padding: 20px;
+  }
+  
+  #wrapper {
+    min-height: calc(100vh - 40px);
+  }
+  
+  #top-header {
+    padding: 20px 30px;
+  }
+  
+  .siteName a {
+    font-size: 1.8rem;
+  }
+  
+  #tools a {
+    font-size: 1rem;
+  }
+  
+  /* Navigation stays horizontal - just bigger */
+  nav a {
+    padding: 18px 15px;
+    font-size: 1rem;
+  }
+  
+  /* Hero Section - Side by side */
+  .hero-content {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+  .hero-text {
+    flex: 1;
+    padding-right: 30px;
+    order: 1;
+  }
+  
+  .hero-image {
+    flex: 1;
+    order: 2;
+  }
+  
+  .hero-image img {
+    max-height: 300px;
+  }
+  
+  /* Content Grid - Side by side */
+  .content-grid {
+    flex-direction: row;
+    gap: 40px;
+  }
+  
+  .upgrades {
+    flex: 1;
+    order: 1;
+  }
+  
+  .reviews {
+    flex: 1;
+    order: 2;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  main {
+    padding: 30px;
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+  }
+  
+  h2 {
+    font-size: 1.4rem;
+  }
+  
+  .hero-text h2 {
+    font-size: 1.8rem;
+  }
+  
+  .upgrade-item img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .upgrade-item span {
+    font-size: 0.9rem;
+  }
+}
+
+/* Remove all underlines globally */
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
 }
