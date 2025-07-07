@@ -177,7 +177,7 @@ h2 {
 }
 
 .cta-button {
-  background-color: #00bcd4;
+  background-color: #04616b;
   color: white;
   padding: 10px 20px;
   text-decoration: none;
@@ -279,7 +279,7 @@ h2 {
 
 .upgrade-item {
   text-align: center;
-  background-color: #00bcd4;
+  background-color: #006064; ;
   padding: 15px;
   border-radius: 8px;
   transition: transform 0.3s;
@@ -313,6 +313,7 @@ h2 {
   display: block;
   font-size: 0.85rem;
   font-weight: bold;
+  color: white;
 }
 
 /* Footer */
@@ -362,7 +363,7 @@ footer {
   
   .hero-text {
     flex: 1;
-    padding-right: 30px;
+    padding-right: 10px;
     order: 1;
   }
   
