@@ -8,10 +8,13 @@
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const env = require("dotenv").config();
+const path = require("path"); // Add this line
 const app = express();
 const static = require("./routes/static");
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute");
+const utilities = require("./utilities/index");
+
 /* ***********************
  * View Engine and Templates
  *************************/
@@ -19,18 +22,54 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "./layouts/layout"); // not at views root
 
+/* ***********************
+ * Static file serving (should be early)
+ *************************/
+app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use("/css", express.static(path.join(__dirname, "public/css")));
+app.use("/js", express.static(path.join(__dirname, "public/js")));
+app.use(static);
 
 /* ***********************
  * Routes
  *************************/
-app.use(static);
+// Base controller routes
+app.get("/", utilities.handleErrors(baseController.buildHome))
+
 // Inventory routes
 app.use("/inv", inventoryRoute)
 
-app.get("/", baseController.buildHome)
-app.get("/", function (req, res) {
-  res.render("index", { title: "Home | CSE Motors" });
-});
+// Intentional Error Route for testing (before 404 handler)
+app.get("/trigger-error", (req, res, next) => {
+  const error = new Error("This is an intentional 500 error for testing!")
+  error.status = 500
+  throw error
+})
+
+// File Not Found Route - must be last route in list
+app.use(async (req, res, next) => {
+  next({status: 404, message: 'Sorry, we appear to have lost that page.'})
+})
+
+/* ***********************
+* Express Error Handler
+* Place after all other middleware
+*************************/
+app.use(async (err, req, res, next) => {
+  let nav = await utilities.getNav()
+  console.error(`Error at: "${req.originalUrl}": ${err.message}`)
+  let message
+  if(err.status == 404){ 
+    message = err.message
+  } else {
+    message = 'Oh no! There was a crash. Maybe try a different route?'
+  }
+  res.render("errors/error", {
+    title: err.status || 'Server Error',
+    message,
+    nav
+  })
+})
 
 /* ***********************
  * Local Server Information
