@@ -1,37 +1,261 @@
-<main>
-  <h1>Add New Classification</h1>
-  
-  <% if (messages.notice) { %>
-    <p class="notice"><%= messages.notice %></p>
-  <% } %>
-  
-  <% if (errors) { %>
-    <ul class="notice">
-    <% errors.array().forEach(error => { %>
-       <li><%= error.msg %></li>
-    <%  }) %>
-    </ul>
-  <% } %>
 
-  <form id="classificationForm" action="/inv/add-classification" method="post">
-    <fieldset>
-      <legend>Classification Information</legend>
+<style>
+  .classification-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .page-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    font-weight: 300;
+    position: relative;
+  }
+
+  .page-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    margin: 0.5rem auto;
+    border-radius: 2px;
+  }
+
+  .form-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+  }
+
+  .form-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .form-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+
+  .form-body {
+    padding: 2rem;
+  }
+
+  .notice {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+    background-color: #d4edda;
+    color: #155724;
+    list-style: none;
+  }
+
+  .notice.error {
+    border-left-color: #dc3545;
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
+  .notice li {
+    margin: 0.5rem 0;
+  }
+
+  #classificationForm fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #classificationForm legend {
+    display: none;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-sizing: border-box;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    transform: translateY(-1px);
+  }
+
+  .form-control:valid {
+    border-color: #28a745;
+  }
+
+  .form-control:invalid:not(:focus) {
+    border-color: #dc3545;
+  }
+
+  .input-note {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .input-note::before {
+    content: "ℹ️";
+    font-size: 1rem;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .submit-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  @media (max-width: 768px) {
+    .classification-container {
+      margin: 1rem auto;
+      padding: 0 0.5rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .form-body {
+      padding: 1.5rem;
+    }
+
+    .form-header {
+      padding: 1rem;
+    }
+  }
+
+  /* Loading animation */
+  .loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .loading .submit-btn::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<main>
+  <div class="classification-container">
+    <h1 class="page-title">Add New Classification</h1>
+    
+    <% if (messages.notice) { %>
+      <p class="notice"><%= messages.notice %></p>
+    <% } %>
+    
+    <% if (errors) { %>
+      <ul class="notice error">
+      <% errors.array().forEach(error => { %>
+         <li><%= error.msg %></li>
+      <%  }) %>
+      </ul>
+    <% } %>
+
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Classification Information</h2>
+      </div>
       
-      <label for="classification_name">Classification Name:</label>
-      <input type="text" 
-             id="classification_name" 
-             name="classification_name" 
-             value="<%= locals.classification_name %>"
-             required 
-             pattern="[A-Za-z0-9]+"
-             title="Classification name cannot contain spaces or special characters">
-      <p class="inputNote">
-        * The classification name cannot contain a space or special character of any kind.
-      </p>
-      
-      <input type="submit" value="Add Classification" class="submit-btn">
-    </fieldset>
-  </form>
+      <div class="form-body">
+        <form id="classificationForm" action="/inv/add-classification" method="post">
+          <fieldset>
+            <legend>Classification Information</legend>
+            
+            <div class="form-group">
+              <label for="classification_name">Classification Name:</label>
+              <input type="text" 
+                     id="classification_name" 
+                     name="classification_name" 
+                     class="form-control"
+                     value="<%= locals.classification_name %>"
+                     required 
+                     pattern="[A-Za-z0-9]+"
+                     title="Classification name cannot contain spaces or special characters"
+                     placeholder="Enter classification name (e.g., SUV, Sedan, Truck)">
+              <p class="input-note">
+                The classification name cannot contain spaces or special characters.
+              </p>
+            </div>
+            
+            <input type="submit" value="Add Classification" class="submit-btn">
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -52,3 +276,4 @@ document.getElementById('classificationForm').addEventListener('submit', functio
   }
 });
 </script>
+

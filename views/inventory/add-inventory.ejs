@@ -1,161 +1,576 @@
-<main>
-  <h1>Add New Vehicle</h1>
-  
-  <% if (messages.notice) { %>
-    <p class="notice"><%= messages.notice %></p>
-  <% } %>
-  
-  <% if (errors) { %>
-    <ul class="notice">
-    <% errors.array().forEach(error => { %>
-       <li><%= error.msg %></li>
-    <%  }) %>
-    </ul>
-  <% } %>
 
-  <form id="inventoryForm" action="/inv/add-inventory" method="post">
-    <fieldset>
-      <legend>Vehicle Information</legend>
+
+<style>
+  .inventory-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .page-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    font-weight: 300;
+    position: relative;
+  }
+
+  .page-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(45deg, #6f42c1, #e83e8c);
+    margin: 0.5rem auto;
+    border-radius: 2px;
+  }
+
+  .form-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+  }
+
+  .form-header {
+    background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .form-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+
+  .form-body {
+    padding: 2rem;
+  }
+
+  .notice {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+    background-color: #d4edda;
+    color: #155724;
+    list-style: none;
+  }
+
+  .notice.error {
+    border-left-color: #dc3545;
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
+  .notice li {
+    margin: 0.5rem 0;
+  }
+
+  #inventoryForm fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #inventoryForm legend {
+    display: none;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-sizing: border-box;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #6f42c1;
+    box-shadow: 0 0 0 3px rgba(111,66,193,0.1);
+    transform: translateY(-1px);
+  }
+
+  .form-control:valid {
+    border-color: #28a745;
+  }
+
+  .form-control:invalid:not(:focus) {
+    border-color: #dc3545;
+  }
+
+  select.form-control {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1.1rem;
+  }
+
+  .input-group .form-control {
+    padding-left: 2.5rem;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 1rem;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(111,66,193,0.3);
+    background: linear-gradient(135deg, #e83e8c 0%, #6f42c1 100%);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .required-indicator {
+    color: #dc3545;
+    margin-left: 4px;
+  }
+
+  .field-hint {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .field-hint::before {
+    content: "💡";
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 768px) {
+    .inventory-container {
+      margin: 1rem auto;
+      padding: 0 0.5rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .form-body {
+      padding: 1.5rem;
+    }
+
+    .form-header {
+      padding: 1rem;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1;
+    }
+  }
+
+  /* Progress indicator */
+  .form-progress {
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .form-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #6f42c1, #e83e8c);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+
+  /* Loading state */
+  .loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .loading .submit-btn::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Field validation icons */
+  .form-group.valid .form-control {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%2328a745' viewBox='0 0 16 16'%3e%3cpath d='M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+  }
+</style>
+
+<main>
+  <div class="inventory-container">
+    <h1 class="page-title">Add New Vehicle</h1>
+    
+    <% if (messages.notice) { %>
+      <p class="notice"><%= messages.notice %></p>
+    <% } %>
+    
+    <% if (errors) { %>
+      <ul class="notice error">
+      <% errors.array().forEach(error => { %>
+         <li><%= error.msg %></li>
+      <%  }) %>
+      </ul>
+    <% } %>
+
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Vehicle Information</h2>
+      </div>
       
-      <label for="classification_id">Classification:</label>
-      <%- classificationSelect %>
-      
-      <label for="inv_make">Make:</label>
-      <input type="text" 
-             id="inv_make" 
-             name="inv_make" 
-             value="<%= locals.inv_make %>"
-             required 
-             minlength="3">
-      
-      <label for="inv_model">Model:</label>
-      <input type="text" 
-             id="inv_model" 
-             name="inv_model" 
-             value="<%= locals.inv_model %>"
-             required 
-             minlength="3">
-      
-      <label for="inv_year">Year:</label>
-      <input type="number" 
-             id="inv_year" 
-             name="inv_year" 
-             value="<%= locals.inv_year %>"
-             required 
-             min="1900" 
-             max="2030"
-             pattern="[0-9]{4}">
-      
-      <label for="inv_description">Description:</label>
-      <textarea id="inv_description" 
-                name="inv_description" 
-                required 
-                rows="4"><%= locals.inv_description %></textarea>
-      
-      <label for="inv_image">Image Path:</label>
-      <input type="text" 
-             id="inv_image" 
-             name="inv_image" 
-             value="<%= locals.inv_image || '/images/vehicles/no-image.png' %>"
-             required>
-      
-      <label for="inv_thumbnail">Thumbnail Path:</label>
-      <input type="text" 
-             id="inv_thumbnail" 
-             name="inv_thumbnail" 
-             value="<%= locals.inv_thumbnail || '/images/vehicles/no-image-tn.png' %>"
-             required>
-      
-      <label for="inv_price">Price:</label>
-      <input type="number" 
-             id="inv_price" 
-             name="inv_price" 
-             value="<%= locals.inv_price %>"
-             required 
-             min="0" 
-             step="0.01">
-      
-      <label for="inv_miles">Miles:</label>
-      <input type="number" 
-             id="inv_miles" 
-             name="inv_miles" 
-             value="<%= locals.inv_miles %>"
-             required 
-             min="0" 
-             step="1">
-      
-      <label for="inv_color">Color:</label>
-      <input type="text" 
-             id="inv_color" 
-             name="inv_color" 
-             value="<%= locals.inv_color %>"
-             required>
-      
-      <input type="submit" value="Add Vehicle" class="submit-btn">
-    </fieldset>
-  </form>
+      <div class="form-body">
+        <div class="form-progress">
+          <div class="form-progress-bar" id="progressBar"></div>
+        </div>
+
+        <form id="inventoryForm" action="/inv/add-inventory" method="post">
+          <fieldset>
+            <legend>Vehicle Information</legend>
+            
+            <div class="form-group full-width">
+              <label for="classificationList">Classification: <span class="required-indicator">*</span></label>
+              <%- classificationSelect %>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="inv_make">Make: <span class="required-indicator">*</span></label>
+                <div class="input-group">
+                  <span class="input-icon">🚗</span>
+                  <input type="text" 
+                         id="inv_make" 
+                         name="inv_make" 
+                         class="form-control"
+                         value="<%= locals.inv_make || '' %>"
+                         required 
+                         minlength="3"
+                         placeholder="e.g., Toyota, Ford, BMW">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="inv_model">Model: <span class="required-indicator">*</span></label>
+                <input type="text" 
+                       id="inv_model" 
+                       name="inv_model" 
+                       class="form-control"
+                       value="<%= locals.inv_model || '' %>"
+                       required 
+                       minlength="3"
+                       placeholder="e.g., Camry, F-150, X5">
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="inv_year">Year: <span class="required-indicator">*</span></label>
+                <div class="input-group">
+                  <span class="input-icon">📅</span>
+                  <input type="number" 
+                         id="inv_year" 
+                         name="inv_year" 
+                         class="form-control"
+                         value="<%= locals.inv_year || '' %>"
+                         required 
+                         min="1900" 
+                         max="2030"
+                         pattern="[0-9]{4}"
+                         placeholder="2024">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="inv_color">Color: <span class="required-indicator">*</span></label>
+                <div class="input-group">
+                  <span class="input-icon">🎨</span>
+                  <input type="text" 
+                         id="inv_color" 
+                         name="inv_color" 
+                         class="form-control"
+                         value="<%= locals.inv_color || '' %>"
+                         required
+                         placeholder="e.g., Red, Blue, Silver">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="inv_description">Description: <span class="required-indicator">*</span></label>
+              <textarea id="inv_description" 
+                        name="inv_description" 
+                        class="form-control"
+                        required 
+                        rows="4"
+                        placeholder="Detailed description of the vehicle including features, condition, and any special notes..."><%= locals.inv_description || '' %></textarea>
+              <div class="field-hint">Provide a comprehensive description to help potential buyers</div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="inv_image">Image Path: <span class="required-indicator">*</span></label>
+                <input type="text" 
+                       id="inv_image" 
+                       name="inv_image" 
+                       class="form-control"
+                       value="<%= locals.inv_image || '/images/vehicles/no-image.png' %>"
+                       required
+                       placeholder="/images/vehicles/vehicle-name.jpg">
+                <div class="field-hint">Path to the main vehicle image</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="inv_thumbnail">Thumbnail Path: <span class="required-indicator">*</span></label>
+                <input type="text" 
+                       id="inv_thumbnail" 
+                       name="inv_thumbnail" 
+                       class="form-control"
+                       value="<%= locals.inv_thumbnail || '/images/vehicles/no-image-tn.png' %>"
+                       required
+                       placeholder="/images/vehicles/vehicle-name-tn.jpg">
+                <div class="field-hint">Path to the thumbnail image</div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="inv_price">Price: <span class="required-indicator">*</span></label>
+                <div class="input-group">
+                  <span class="input-icon">💰</span>
+                  <input type="number" 
+                         id="inv_price" 
+                         name="inv_price" 
+                         class="form-control"
+                         value="<%= locals.inv_price || '' %>"
+                         required 
+                         min="0" 
+                         step="0.01"
+                         placeholder="25000.00">
+                </div>
+                <div class="field-hint">Enter price in USD (no commas)</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="inv_miles">Mileage: <span class="required-indicator">*</span></label>
+                <div class="input-group">
+                  <span class="input-icon">🛣️</span>
+                  <input type="number" 
+                         id="inv_miles" 
+                         name="inv_miles" 
+                         class="form-control"
+                         value="<%= locals.inv_miles || '' %>"
+                         required 
+                         min="0" 
+                         step="1"
+                         placeholder="15000">
+                </div>
+                <div class="field-hint">Total miles driven</div>
+              </div>
+            </div>
+            
+            <input type="submit" value="Add Vehicle" class="submit-btn">
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script>
-document.getElementById('inventoryForm').addEventListener('submit', function(e) {
-  // Client-side validation
-  const make = document.getElementById('inv_make').value.trim();
-  const model = document.getElementById('inv_model').value.trim();
-  const year = document.getElementById('inv_year').value;
-  const description = document.getElementById('inv_description').value.trim();
-  const image = document.getElementById('inv_image').value.trim();
-  const thumbnail = document.getElementById('inv_thumbnail').value.trim();
-  const price = document.getElementById('inv_price').value;
-  const miles = document.getElementById('inv_miles').value;
-  const color = document.getElementById('inv_color').value.trim();
-  const classification = document.getElementById('classificationList').value;
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('inventoryForm');
+  const progressBar = document.getElementById('progressBar');
+  const submitBtn = form.querySelector('.submit-btn');
   
-  let errors = [];
+  // Simple form validation without complex DOM manipulation
+  form.addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent default submission to validate first
+    
+    // Get form values safely
+    const classification = document.getElementById('classificationList')?.value || '';
+    const make = document.getElementById('inv_make')?.value.trim() || '';
+    const model = document.getElementById('inv_model')?.value.trim() || '';
+    const year = document.getElementById('inv_year')?.value || '';
+    const description = document.getElementById('inv_description')?.value.trim() || '';
+    const image = document.getElementById('inv_image')?.value.trim() || '';
+    const thumbnail = document.getElementById('inv_thumbnail')?.value.trim() || '';
+    const price = document.getElementById('inv_price')?.value || '';
+    const miles = document.getElementById('inv_miles')?.value || '';
+    const color = document.getElementById('inv_color')?.value.trim() || '';
+    
+    let errors = [];
+    
+    // Basic validation
+    if (!classification) errors.push('Please select a classification');
+    if (make.length < 3) errors.push('Make must be at least 3 characters');
+    if (model.length < 3) errors.push('Model must be at least 3 characters');
+    if (!year || year.length !== 4 || isNaN(year) || year < 1900 || year > 2030) {
+      errors.push('Year must be a 4-digit number between 1900 and 2030');
+    }
+    if (description.length < 1) errors.push('Description is required');
+    if (image.length < 1) errors.push('Image path is required');
+    if (thumbnail.length < 1) errors.push('Thumbnail path is required');
+    if (!price || isNaN(price) || parseFloat(price) < 0) errors.push('Price must be a positive number');
+    if (!miles || isNaN(miles) || parseInt(miles) < 0) errors.push('Miles must be a positive number');
+    if (color.length < 1) errors.push('Color is required');
+    
+    if (errors.length > 0) {
+      alert('Please fix these errors:\n\n• ' + errors.join('\n• '));
+      return false;
+    }
+    
+    // Show loading state
+    if (submitBtn) {
+      submitBtn.style.opacity = '0.7';
+      submitBtn.style.pointerEvents = 'none';
+      submitBtn.value = 'Adding Vehicle...';
+    }
+    
+    // Submit the form
+    form.submit();
+    return true;
+  });
   
-  if (make.length < 3) {
-    errors.push('Make must be at least 3 characters long.');
+  // Simple progress tracking
+  function updateProgress() {
+    const fields = [
+      'classificationList', 'inv_make', 'inv_model', 'inv_year', 
+      'inv_description', 'inv_image', 'inv_thumbnail', 'inv_price', 
+      'inv_miles', 'inv_color'
+    ];
+    
+    let filledFields = 0;
+    fields.forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (field && field.value.trim() !== '') {
+        filledFields++;
+      }
+    });
+    
+    const progress = (filledFields / fields.length) * 100;
+    if (progressBar) {
+      progressBar.style.width = progress + '%';
+    }
   }
   
-  if (model.length < 3) {
-    errors.push('Model must be at least 3 characters long.');
+  // Add event listeners for progress tracking
+  const allInputs = form.querySelectorAll('input, select, textarea');
+  allInputs.forEach(input => {
+    if (input) {
+      input.addEventListener('input', updateProgress);
+      input.addEventListener('change', updateProgress);
+    }
+  });
+  
+  // Auto-populate thumbnail from image path
+  const imageField = document.getElementById('inv_image');
+  const thumbnailField = document.getElementById('inv_thumbnail');
+  
+  if (imageField && thumbnailField) {
+    imageField.addEventListener('blur', function() {
+      const imagePath = this.value.trim();
+      if (imagePath && (!thumbnailField.value.trim() || thumbnailField.value === '/images/vehicles/no-image-tn.png')) {
+        if (imagePath.includes('.')) {
+          const pathParts = imagePath.split('.');
+          const extension = pathParts.pop();
+          const basePath = pathParts.join('.');
+          thumbnailField.value = basePath + '-tn.' + extension;
+          updateProgress(); // Update progress after auto-fill
+        }
+      }
+    });
   }
   
-  if (year.length !== 4 || isNaN(year) || year < 1900 || year > 2030) {
-    errors.push('Year must be a 4-digit number between 1900 and 2030.');
-  }
-  
-  if (description.length < 1) {
-    errors.push('Description is required.');
-  }
-  
-  if (image.length < 1) {
-    errors.push('Image path is required.');
-  }
-  
-  if (thumbnail.length < 1) {
-    errors.push('Thumbnail path is required.');
-  }
-  
-  if (isNaN(price) || price < 0) {
-    errors.push('Price must be a positive number.');
-  }
-  
-  if (isNaN(miles) || miles < 0 || miles % 1 !== 0) {
-    errors.push('Miles must be a positive whole number.');
-  }
-  
-  if (color.length < 1) {
-    errors.push('Color is required.');
-  }
-  
-  if (!classification) {
-    errors.push('Please select a classification.');
-  }
-  
-  if (errors.length > 0) {
-    e.preventDefault();
-    alert('Please fix the following errors:\n\n' + errors.join('\n'));
-    return false;
-  }
+  // Initial progress update
+  setTimeout(updateProgress, 100);
 });
 </script>
+
