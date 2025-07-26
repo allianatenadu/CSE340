@@ -1,0 +1,161 @@
+<main>
+  <h1>Add New Vehicle</h1>
+  
+  <% if (messages.notice) { %>
+    <p class="notice"><%= messages.notice %></p>
+  <% } %>
+  
+  <% if (errors) { %>
+    <ul class="notice">
+    <% errors.array().forEach(error => { %>
+       <li><%= error.msg %></li>
+    <%  }) %>
+    </ul>
+  <% } %>
+
+  <form id="inventoryForm" action="/inv/add-inventory" method="post">
+    <fieldset>
+      <legend>Vehicle Information</legend>
+      
+      <label for="classification_id">Classification:</label>
+      <%- classificationSelect %>
+      
+      <label for="inv_make">Make:</label>
+      <input type="text" 
+             id="inv_make" 
+             name="inv_make" 
+             value="<%= locals.inv_make %>"
+             required 
+             minlength="3">
+      
+      <label for="inv_model">Model:</label>
+      <input type="text" 
+             id="inv_model" 
+             name="inv_model" 
+             value="<%= locals.inv_model %>"
+             required 
+             minlength="3">
+      
+      <label for="inv_year">Year:</label>
+      <input type="number" 
+             id="inv_year" 
+             name="inv_year" 
+             value="<%= locals.inv_year %>"
+             required 
+             min="1900" 
+             max="2030"
+             pattern="[0-9]{4}">
+      
+      <label for="inv_description">Description:</label>
+      <textarea id="inv_description" 
+                name="inv_description" 
+                required 
+                rows="4"><%= locals.inv_description %></textarea>
+      
+      <label for="inv_image">Image Path:</label>
+      <input type="text" 
+             id="inv_image" 
+             name="inv_image" 
+             value="<%= locals.inv_image || '/images/vehicles/no-image.png' %>"
+             required>
+      
+      <label for="inv_thumbnail">Thumbnail Path:</label>
+      <input type="text" 
+             id="inv_thumbnail" 
+             name="inv_thumbnail" 
+             value="<%= locals.inv_thumbnail || '/images/vehicles/no-image-tn.png' %>"
+             required>
+      
+      <label for="inv_price">Price:</label>
+      <input type="number" 
+             id="inv_price" 
+             name="inv_price" 
+             value="<%= locals.inv_price %>"
+             required 
+             min="0" 
+             step="0.01">
+      
+      <label for="inv_miles">Miles:</label>
+      <input type="number" 
+             id="inv_miles" 
+             name="inv_miles" 
+             value="<%= locals.inv_miles %>"
+             required 
+             min="0" 
+             step="1">
+      
+      <label for="inv_color">Color:</label>
+      <input type="text" 
+             id="inv_color" 
+             name="inv_color" 
+             value="<%= locals.inv_color %>"
+             required>
+      
+      <input type="submit" value="Add Vehicle" class="submit-btn">
+    </fieldset>
+  </form>
+</main>
+
+<script>
+document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+  // Client-side validation
+  const make = document.getElementById('inv_make').value.trim();
+  const model = document.getElementById('inv_model').value.trim();
+  const year = document.getElementById('inv_year').value;
+  const description = document.getElementById('inv_description').value.trim();
+  const image = document.getElementById('inv_image').value.trim();
+  const thumbnail = document.getElementById('inv_thumbnail').value.trim();
+  const price = document.getElementById('inv_price').value;
+  const miles = document.getElementById('inv_miles').value;
+  const color = document.getElementById('inv_color').value.trim();
+  const classification = document.getElementById('classificationList').value;
+  
+  let errors = [];
+  
+  if (make.length < 3) {
+    errors.push('Make must be at least 3 characters long.');
+  }
+  
+  if (model.length < 3) {
+    errors.push('Model must be at least 3 characters long.');
+  }
+  
+  if (year.length !== 4 || isNaN(year) || year < 1900 || year > 2030) {
+    errors.push('Year must be a 4-digit number between 1900 and 2030.');
+  }
+  
+  if (description.length < 1) {
+    errors.push('Description is required.');
+  }
+  
+  if (image.length < 1) {
+    errors.push('Image path is required.');
+  }
+  
+  if (thumbnail.length < 1) {
+    errors.push('Thumbnail path is required.');
+  }
+  
+  if (isNaN(price) || price < 0) {
+    errors.push('Price must be a positive number.');
+  }
+  
+  if (isNaN(miles) || miles < 0 || miles % 1 !== 0) {
+    errors.push('Miles must be a positive whole number.');
+  }
+  
+  if (color.length < 1) {
+    errors.push('Color is required.');
+  }
+  
+  if (!classification) {
+    errors.push('Please select a classification.');
+  }
+  
+  if (errors.length > 0) {
+    e.preventDefault();
+    alert('Please fix the following errors:\n\n' + errors.join('\n'));
+    return false;
+  }
+});
+</script>

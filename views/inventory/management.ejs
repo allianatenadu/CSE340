@@ -1,0 +1,29 @@
+<main>
+  <h1>Vehicle Management</h1>
+  
+  <% if (messages.notice) { %>
+    <p class="notice"><%= messages.notice %></p>
+  <% } %>
+  
+  <% if (messages.error) { %>
+    <p class="error"><%= messages.error %></p>
+  <% } %>
+
+  <div class="management-links">
+    <h2>Inventory Management</h2>
+    <p>Use the links below to manage your vehicle inventory and classifications.</p>
+    
+    <ul class="management-list">
+      <li>
+        <a href="/inv/add-classification" title="Add a new classification">
+          Add New Classification
+        </a>
+      </li>
+      <li>
+        <a href="/inv/add-inventory" title="Add a new vehicle">
+          Add New Vehicle
+        </a>
+      </li>
+    </ul>
+  </div>
+</main>

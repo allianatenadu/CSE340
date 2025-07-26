@@ -14,13 +14,48 @@ const static = require("./routes/static");
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute");
 const utilities = require("./utilities/index");
+const session = require("express-session")
+const pool = require('./database/')
+const bodyParser = require("body-parser")
+
+
 
 /* ***********************
  * View Engine and Templates
  *************************/
+
+/* ***********************
+ * Middleware
+ * ************************/
+ app.use(session({
+  store: new (require('connect-pg-simple')(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
+}))
+// Express Messages Middleware
+app.use(require('connect-flash')())
+app.use(function(req, res, next){
+  res.locals.messages = require('express-messages')(req, res)
+  next()
+})
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "./layouts/layout"); // not at views root
+
+
+
+
+
 
 /* ***********************
  * Static file serving (should be early)
@@ -38,6 +73,9 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
 app.use("/inv", inventoryRoute)
+// Account routes
+app.use("/account", require("./routes/accountRoute"));
+
 
 // Intentional Error Route for testing (before 404 handler)
 app.get("/trigger-error", (req, res, next) => {

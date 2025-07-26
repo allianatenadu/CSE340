@@ -1,0 +1,304 @@
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else { %>
+<h1>Login</h1>
+<% } %> <% if (locals.errors) { %>
+<ul class="notice">
+  <% locals.errors.array().forEach(error => { %>
+  <li><%= error.msg %></li>
+  <% }) %>
+</ul>
+<% } %> <%- locals.messages() %>
+
+<div class="login-container">
+  <form id="loginForm" action="/account/login" method="post">
+    <div class="form-group">
+      <label for="account_email"
+        >Email Address: <span class="required">*</span></label
+      >
+      <input
+        type="email"
+        id="account_email"
+        name="account_email"
+        value="<%= locals.account_email || '' %>"
+        required
+        placeholder="Enter a valid email address"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="account_password"
+        >Password: <span class="required">*</span></label
+      >
+      <div class="password-requirements">
+        <span
+          ><strong>Password Requirements:</strong> Passwords must be at least 12
+          characters and contain at least 1 number, 1 capital letter and 1
+          special character</span
+        >
+      </div>
+      <div class="password-container">
+        <input
+          type="password"
+          id="account_password"
+          name="account_password"
+          required
+          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+          title="Password must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character"
+        />
+        <button
+          type="button"
+          id="togglePassword"
+          class="toggle-btn"
+          aria-label="Toggle password visibility"
+        >
+          👁️
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="login-btn">LOGIN</button>
+    </div>
+  </form>
+
+  <p class="register-link">
+    Don't have an account? <a href="/account/register">Sign up</a>
+  </p>
+</div>
+
+<style>
+  .login-container {
+    background-color: #364156;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 50px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .required {
+    color: #ff6b6b;
+    font-weight: bold;
+  }
+
+  .form-group input[type="email"],
+  .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+
+  /* HTML5 Validation Styling */
+  input:required:invalid,
+  input:focus:invalid {
+    border: 2px solid #ff6b6b;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>');
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+
+  input:required:valid {
+    border: 2px solid #28a745;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/></svg>');
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+
+  .password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-container input {
+    flex: 1;
+    padding-right: 45px;
+  }
+
+  .password-container input:required:invalid,
+  .password-container input:focus:invalid {
+    padding-right: 75px;
+  }
+
+  .password-container input:required:valid {
+    padding-right: 75px;
+  }
+
+  .toggle-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    padding: 5px;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+    z-index: 2;
+  }
+
+  .toggle-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .password-requirements {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .password-requirements span {
+    color: #ffffff;
+  }
+
+  .login-btn {
+    background-color: #ffffff;
+    color: #364156;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+    transition: background-color 0.3s ease;
+  }
+
+  .login-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+  .login-btn:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+  }
+
+  .register-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .register-link a {
+    color: white;
+    text-decoration: underline;
+  }
+
+  .register-link a:hover {
+    color: #ccc;
+  }
+
+  /* Flash message styling */
+  .notice {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+  }
+
+  .error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #f5c6cb;
+  }
+
+  /* Responsive design */
+  @media (max-width: 480px) {
+    .login-container {
+      margin: 20px;
+      padding: 20px;
+    }
+
+    .password-requirements {
+      font-size: 12px;
+    }
+  }
+</style>
+
+<script>
+  // Password toggle functionality
+  document.addEventListener("DOMContentLoaded", function () {
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordField = document.getElementById("account_password");
+
+    if (togglePassword && passwordField) {
+      togglePassword.addEventListener("click", function () {
+        const type =
+          passwordField.getAttribute("type") === "password"
+            ? "text"
+            : "password";
+        passwordField.setAttribute("type", type);
+
+        this.textContent = type === "password" ? "👁️" : "🙈";
+
+        this.setAttribute(
+          "aria-label",
+          type === "password" ? "Show password" : "Hide password"
+        );
+      });
+    }
+
+    // Real-time validation feedback
+    const inputs = document.querySelectorAll("input[required]");
+    inputs.forEach((input) => {
+      input.addEventListener("input", function () {
+        this.checkValidity();
+      });
+
+      input.addEventListener("blur", function () {
+        this.checkValidity();
+      });
+    });
+
+    // Form submission validation
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", function (e) {
+      const isValid = this.checkValidity();
+      if (!isValid) {
+        e.preventDefault();
+
+        const firstInvalid = this.querySelector(":invalid");
+        if (firstInvalid) {
+          firstInvalid.focus();
+        }
+      }
+    });
+  });
+</script>
