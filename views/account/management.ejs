@@ -1,48 +1,96 @@
-<!-- views/account/management.ejs -->
+<div class="account-management-container">
+  <!-- Welcome Message for All Users -->
+  <h2>Welcome <%= locals.accountData.account_firstname %></h2>
+  
+  <%- messages() %>
+  
+  <!-- Update Account Information Link (for all users) -->
+  <div class="account-section">
+    <p>
+      <a href="/account/update" class="update-link">Update Account Information</a>
+    </p>
+  </div>
 
-
-<main>
-    <div class="container">
-        <h1>Account Management</h1>
-        
-        <!-- Flash Messages -->
-        <% if (messages.notice) { %>
-            <div class="alert alert-success">
-                <%= messages.notice %>
-            </div>
-        <% } %>
-        
-        <% if (messages.error) { %>
-            <div class="alert alert-danger">
-                <%= messages.error %>
-            </div>
-        <% } %>
-        
-        <!-- Error Handling -->
-        <% if (typeof errors !== 'undefined' && Array.isArray(errors)) { %>
-            <div class="alert alert-danger">
-                <ul class="error-list">
-                    <% errors.forEach(function(error) { %>
-                        <li><%= error.msg %></li>
-                    <% }); %>
-                </ul>
-            </div>
-        <% } %>
-        
-        <!-- Main Content -->
-        <div class="account-content">
-            <p>You're logged in</p>
-            
-            <!-- Display user information for testing -->
-            <% if (typeof locals.accountData !== 'undefined' && locals.accountData) { %>
-                <div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px;">
-                    <h3>Account Information:</h3>
-                    <p><strong>Name:</strong> <%= locals.accountData.account_firstname %> <%= locals.accountData.account_lastname %></p>
-                    <p><strong>Email:</strong> <%= locals.accountData.account_email %></p>
-                    <p><strong>Account Type:</strong> <%= locals.accountData.account_type %></p>
-                    <p><strong>Account ID:</strong> <%= locals.accountData.account_id %></p>
-                </div>
-            <% } %>
-        </div>
+  <!-- Inventory Management Section (Employee/Admin only) -->
+  <% if (locals.accountData.account_type === 'Employee' || locals.accountData.account_type === 'Admin') { %>
+    <div class="inventory-section">
+      <h3>Inventory Management</h3>
+      <p><a href="/inv/" class="inventory-link">Manage Inventory</a></p>
     </div>
-</main>
+  <% } %>
+
+  <!-- Account Type Display -->
+  <div class="account-info">
+    <p><strong>Account Type:</strong> <%= locals.accountData.account_type %></p>
+    <p><strong>Email:</strong> <%= locals.accountData.account_email %></p>
+  </div>
+</div>
+
+<style>
+.account-management-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.account-management-container h2 {
+  color: #28a745;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.account-management-container h3 {
+  color: #007bff;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+}
+
+.account-section, .inventory-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+.update-link, .inventory-link {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.update-link:hover, .inventory-link:hover {
+  background: #0056b3;
+  text-decoration: none;
+  color: white;
+}
+
+.account-info {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-top: 2rem;
+}
+
+.account-info p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .account-management-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}
+</style>

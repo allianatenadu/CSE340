@@ -1,0 +1,276 @@
+
+
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else { %>
+<h1>Update Account</h1>
+<% } %>
+
+<%- messages() %>
+
+<% if (errors) { %>
+<ul class="notice error">
+  <% errors.array().forEach(error => { %>
+  <li><%= error.msg %></li>
+  <% }) %>
+</ul>
+<% } %>
+
+<div class="update-container">
+  <!-- Account Information Update Form -->
+  <div class="form-section">
+    <h2>Update Account Information</h2>
+    <form action="/account/update" method="post" class="update-form" id="accountUpdateForm">
+      <input type="hidden" name="account_id" value="<%= locals.account_id || '' %>">
+      
+      <div class="form-group">
+        <label for="account_firstname">First Name:</label>
+        <input type="text" id="account_firstname" name="account_firstname" 
+               value="<%= locals.account_firstname || '' %>" required>
+      </div>
+
+      <div class="form-group">
+        <label for="account_lastname">Last Name:</label>
+        <input type="text" id="account_lastname" name="account_lastname" 
+               value="<%= locals.account_lastname || '' %>" required>
+      </div>
+
+      <div class="form-group">
+        <label for="account_email">Email Address:</label>
+        <input type="email" id="account_email" name="account_email" 
+               value="<%= locals.account_email || '' %>" required>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Update Account</button>
+        <a href="/account/" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Password Change Form -->
+  <div class="form-section">
+    <h2>Change Password</h2>
+    <div class="password-info">
+      <p><strong>Password Requirements:</strong></p>
+      <ul>
+        <li>At least 12 characters long</li>
+        <li>At least 1 uppercase letter</li>
+        <li>At least 1 lowercase letter</li>
+        <li>At least 1 number</li>
+        <li>At least 1 special character</li>
+      </ul>
+      <p><em>Entering a new password will replace your current password.</em></p>
+    </div>
+    
+    <form action="/account/change-password" method="post" class="update-form" id="passwordUpdateForm">
+      <input type="hidden" name="account_id" value="<%= locals.account_id || '' %>">
+      
+      <div class="form-group">
+        <label for="account_password">New Password:</label>
+        <div class="password-container">
+          <input type="password" id="account_password" name="account_password" 
+                 pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+                 title="Password must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character"
+                 required>
+          <button type="button" id="togglePassword" class="toggle-btn" aria-label="Toggle password visibility">👁️</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Change Password</button>
+        <a href="/account/" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.update-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.form-section {
+  background: white;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-section h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+}
+
+.update-form {
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container input {
+  padding-right: 45px;
+}
+
+.toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 5px;
+}
+
+.toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.password-info {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #17a2b8;
+}
+
+.password-info ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.password-info li {
+  margin: 0.25rem 0;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+  text-decoration: none;
+}
+
+.notice {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  list-style: none;
+}
+
+.notice.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.notice li {
+  margin: 0.25rem 0;
+}
+
+@media (max-width: 768px) {
+  .update-container {
+    margin: 1rem;
+    padding: 0;
+  }
+  
+  .form-section {
+    padding: 1rem;
+  }
+}
+</style>
+
+<script>
+// Password toggle functionality
+document.addEventListener("DOMContentLoaded", function () {
+  const togglePassword = document.getElementById("togglePassword");
+  const passwordField = document.getElementById("account_password");
+
+  if (togglePassword && passwordField) {
+    togglePassword.addEventListener("click", function () {
+      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+      passwordField.setAttribute("type", type);
+      this.textContent = type === "password" ? "👁️" : "🙈";
+      this.setAttribute("aria-label", type === "password" ? "Show password" : "Hide password");
+    });
+  }
+
+  // Form validation
+  const forms = document.querySelectorAll(".update-form");
+  forms.forEach(form => {
+    form.addEventListener("submit", function (e) {
+      const isValid = this.checkValidity();
+      if (!isValid) {
+        e.preventDefault();
+        const firstInvalid = this.querySelector(":invalid");
+        if (firstInvalid) {
+          firstInvalid.focus();
+        }
+      }
+    });
+  });
+});
+</script>
+
