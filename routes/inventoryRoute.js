@@ -11,6 +11,9 @@ router.get("/type/:classificationId", utilities.handleErrors(invController.build
 // Route to build inventory item detail view
 router.get("/detail/:invId", utilities.handleErrors(invController.buildByInvId))
 
+// Route to get inventory by classification (for AJAX)
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+
 // Route to build management view
 router.get("/", utilities.handleErrors(invController.buildManagement))
 
@@ -34,6 +37,16 @@ router.post(
   regValidate.inventoryRules(),
   regValidate.checkInventoryData,
   utilities.handleErrors(invController.addInventory)
+)
+
+// Route to build edit inventory view
+router.get("/edit/:inv_id", utilities.handleErrors(invController.buildEditInventory))
+
+// Route to process inventory update
+router.post("/update", 
+  regValidate.inventoryRules(),
+  regValidate.checkUpdateData,
+  utilities.handleErrors(invController.updateInventory)
 )
 
 module.exports = router

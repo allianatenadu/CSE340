@@ -1,4 +1,5 @@
 
+
 <style>
   .management-container {
     max-width: 900px;
@@ -185,6 +186,95 @@
     font-size: 1.2rem;
   }
 
+  /* Inventory Management Section Styles */
+  .inventory-section {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 2px solid #e9ecef;
+  }
+
+  .inventory-section h2 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .inventory-instructions {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .classification-selector {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .classification-selector select {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    background-color: white;
+    color: #495057;
+    min-width: 300px;
+    transition: all 0.3s ease;
+  }
+
+  .classification-selector select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+  }
+
+  #inventoryDisplay {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  #inventoryDisplay th {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #0056b3;
+  }
+
+  #inventoryDisplay td {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+  }
+
+  #inventoryDisplay tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  #inventoryDisplay tr:last-child td {
+    border-bottom: none;
+  }
+
+  noscript {
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    color: #856404;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+  }
+
   @media (max-width: 768px) {
     .management-container {
       margin: 1rem auto;
@@ -211,6 +301,19 @@
 
     .card-body {
       padding: 1.5rem;
+    }
+
+    .classification-selector select {
+      min-width: 100%;
+    }
+
+    #inventoryDisplay {
+      font-size: 0.9rem;
+    }
+
+    #inventoryDisplay th,
+    #inventoryDisplay td {
+      padding: 0.5rem;
     }
   }
 
@@ -264,13 +367,7 @@
       <p>Manage your vehicle inventory and classifications with ease using the tools below.</p>
     </div>
     
-    <% if (messages.notice) { %>
-      <p class="notice"><%= messages.notice %></p>
-    <% } %>
-    
-    <% if (messages.error) { %>
-      <p class="notice error"><%= messages.error %></p>
-    <% } %>
+    <%- messages() %>
 
     <div class="management-grid">
       <!-- Add Classification Card -->
@@ -319,8 +416,25 @@
         </div>
       </div>
     </div>
+
+    <!-- Inventory Management Section -->
+    <div class="inventory-section">
+      <h2>Manage Inventory</h2>
+      
+      <p class="inventory-instructions">
+        Select a classification from the list below to see the inventory items belonging to that classification.
+      </p>
+
+      <div class="classification-selector">
+        <%- classificationSelect %>
+      </div>
+
+      <table id="inventoryDisplay"></table>
+
+      <noscript>JavaScript must be enabled to use this page.</noscript>
+    </div>
   </div>
 </main>
 
+<script src="/js/inventory.js"></script>
 
-</main>

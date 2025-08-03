@@ -1,5 +1,7 @@
 const invModel = require("../models/inventory-model")
 const Util = {}
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -111,4 +113,69 @@ Util.buildClassificationList = async function (classification_id = null) {
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
+/* ****************************************
+* Middleware to check token validity
+**************************************** */
+Util.checkJWTToken = (req, res, next) => {
+ if (req.cookies.jwt) {
+  jwt.verify(
+   req.cookies.jwt,
+   process.env.ACCESS_TOKEN_SECRET,
+   function (err, accountData) {
+    if (err) {
+     req.flash("Please log in")
+     res.clearCookie("jwt")
+     return res.redirect("/account/login")
+    }
+    res.locals.accountData = accountData
+    res.locals.loggedin = 1
+    next()
+   })
+ } else {
+  next()
+ }
+}
+
+/* ****************************************
+ *  Check Login
+ * ************************************ */
+ Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
+ }
+
+ /* ****************************************
+* Middleware to check token validity
+**************************************** */
+Util.checkJWTToken = (req, res, next) => {
+ console.log("🔍 Checking JWT Token...")
+ console.log("Cookies present:", Object.keys(req.cookies))
+ 
+ if (req.cookies.jwt) {
+  console.log("🍪 JWT cookie found")
+  jwt.verify(
+   req.cookies.jwt,
+   process.env.ACCESS_TOKEN_SECRET,
+   function (err, accountData) {
+    if (err) {
+     console.log("❌ JWT verification failed:", err.message)
+     req.flash("notice", "Please log in")
+     res.clearCookie("jwt")
+     return res.redirect("/account/login")
+    }
+    console.log("✅ JWT verified for user:", accountData.account_email)
+    res.locals.accountData = accountData
+    res.locals.loggedin = 1
+    console.log("🏷️ Set res.locals.loggedin =", res.locals.loggedin)
+    next()
+   })
+ } else {
+  console.log("🔍 No JWT cookie found")
+  next()
+ }
+}
 module.exports = Util

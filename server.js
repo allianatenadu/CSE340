@@ -17,6 +17,7 @@ const utilities = require("./utilities/index");
 const session = require("express-session")
 const pool = require('./database/')
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 
 
 
@@ -52,8 +53,8 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "./layouts/layout"); // not at views root
 
-
-
+app.use(cookieParser())
+app.use(utilities.checkJWTToken)
 
 
 

@@ -91,7 +91,33 @@ VALUES
 -- Sport vehicles (classification_id = 5)
 ('Chevrolet', 'Camaro', 2018, 'If you want to look cool, this is the car you need! Two seater, open-air, go-cart fun! Fast and stylish with modern performance.', '/images/vehicles/camaro.jpg', '/images/vehicles/camaro-tn.jpg', 45000, 8500, 'Black', 5);
 
--- Step 9: Verification queries
+-- Step 9: Insert required test accounts with plain text passwords
+-- These will be automatically hashed on first login by the flexible login function
+INSERT INTO public.account (account_firstname, account_lastname, account_email, account_password, account_type)
+VALUES
+    ('Basic', 'Client', 'basic@340.edu', 'I@mABas1cCl!3nt', 'Client'),
+    ('Happy', 'Employee', 'happy@340.edu', 'I@mAnEmpl0y33', 'Client'),
+    ('Manager', 'User', 'manager@340.edu', 'I@mAnAdm!n1strat0r', 'Client');
+
+-- Step 10: Alternative - Insert with plain text passwords (will be hashed on first login)
+-- Uncomment these lines if you prefer to use plain text passwords initially
+-- INSERT INTO public.account (account_firstname, account_lastname, account_email, account_password, account_type)
+-- VALUES
+--     ('Basic', 'Client', 'basic@340.edu', 'I@mABas1cCl!3nt', 'Client'),
+--     ('Happy', 'Employee', 'happy@340.edu', 'I@mAnEmpl0y33', 'Employee'),
+--     ('Manager', 'User', 'manager@340.edu', 'I@mAnAdm!n1strat0r', 'Admin');
+
+-- Step 11: Update existing accounts to correct types (if accounts already exist)
+-- Run these only if you already have the accounts and need to update their types
+UPDATE public.account 
+SET account_type = 'Employee' 
+WHERE account_email = 'happy@340.edu';
+
+UPDATE public.account 
+SET account_type = 'Admin' 
+WHERE account_email = 'manager@340.edu';
+
+-- Step 12: Verification queries
 SELECT '=== DATABASE REBUILD COMPLETE ===' as status;
 
 SELECT 'Classifications created:' as info;
@@ -112,7 +138,28 @@ SELECT inv_id, inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color, c
 FROM public.inventory 
 ORDER BY classification_id, inv_id;
 
+SELECT 'Test accounts created:' as info;
+SELECT account_id, account_firstname, account_lastname, account_email, account_type 
+FROM public.account 
+ORDER BY account_type, account_email;
+
+SELECT 'Account types summary:' as info;
+SELECT account_type, COUNT(*) as count 
+FROM public.account 
+GROUP BY account_type 
+ORDER BY account_type;
+
 SELECT 'Checking for any problematic image references:' as info;
 SELECT COUNT(*) as f150_count FROM public.inventory WHERE inv_image LIKE '%f150%' OR inv_thumbnail LIKE '%f150%';
 
-SELECT '=== READY FOR FRONTEND ===' as final_status;
+SELECT '=== READY FOR TESTING ===' as final_status;
+
+-- Step 13: Quick test account creation script (alternative approach)
+-- If you want to create the test accounts manually later, use these commands:
+/*
+INSERT INTO public.account (account_firstname, account_lastname, account_email, account_password, account_type)
+VALUES
+    ('Basic', 'Client', 'basic@340.edu', 'I@mABas1cCl!3nt', 'Client'),
+    ('Happy', 'Employee', 'happy@340.edu', 'I@mAnEmpl0y33', 'Employee'), 
+    ('Manager', 'User', 'manager@340.edu', 'I@mAnAdm!n1strat0r', 'Admin');
+*/

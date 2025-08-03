@@ -1,14 +1,20 @@
+
+
 <% if (title) { %>
 <h1><%= title %></h1>
 <% } else { %>
 <h1>Login</h1>
-<% } %> <% if (locals.errors) { %>
+<% } %> 
+
+<% if (locals.errors) { %>
 <ul class="notice">
   <% locals.errors.array().forEach(error => { %>
   <li><%= error.msg %></li>
   <% }) %>
 </ul>
-<% } %> <%- locals.messages() %>
+<% } %> 
+
+<%- locals.messages() %>
 
 <div class="login-container">
   <form id="loginForm" action="/account/login" method="post">
@@ -32,9 +38,7 @@
       >
       <div class="password-requirements">
         <span
-          ><strong>Password Requirements:</strong> Passwords must be at least 12
-          characters and contain at least 1 number, 1 capital letter and 1
-          special character</span
+          ><strong>Note:</strong> Enter your existing password. New registrations require 12+ characters with 1 number, 1 capital letter and 1 special character.</span
         >
       </div>
       <div class="password-container">
@@ -43,8 +47,8 @@
           id="account_password"
           name="account_password"
           required
-          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
-          title="Password must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character"
+          placeholder="Enter your password"
+          title="Enter your password"
         />
         <button
           type="button"
@@ -110,24 +114,13 @@
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
   }
 
-  /* HTML5 Validation Styling */
-  input:required:invalid,
-  input:focus:invalid {
+  /* Simplified validation styling - only for required fields */
+  input:required:invalid:not(:placeholder-shown) {
     border: 2px solid #ff6b6b;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>');
-    background-position: right 10px center;
-    background-repeat: no-repeat;
-    background-size: 16px;
-    padding-right: 40px;
   }
 
   input:required:valid {
     border: 2px solid #28a745;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/></svg>');
-    background-position: right 10px center;
-    background-repeat: no-repeat;
-    background-size: 16px;
-    padding-right: 40px;
   }
 
   .password-container {
@@ -139,15 +132,6 @@
   .password-container input {
     flex: 1;
     padding-right: 45px;
-  }
-
-  .password-container input:required:invalid,
-  .password-container input:focus:invalid {
-    padding-right: 75px;
-  }
-
-  .password-container input:required:valid {
-    padding-right: 75px;
   }
 
   .toggle-btn {
@@ -193,6 +177,7 @@
     display: block;
     margin: 20px auto;
     transition: background-color 0.3s ease;
+    width: 100%;
   }
 
   .login-btn:hover {
@@ -228,6 +213,11 @@
     border-radius: 5px;
     margin-bottom: 20px;
     border: 1px solid #c3e6cb;
+    list-style: none;
+  }
+
+  .notice li {
+    margin: 5px 0;
   }
 
   .error {
@@ -275,30 +265,32 @@
       });
     }
 
-    // Real-time validation feedback
-    const inputs = document.querySelectorAll("input[required]");
-    inputs.forEach((input) => {
-      input.addEventListener("input", function () {
-        this.checkValidity();
-      });
-
-      input.addEventListener("blur", function () {
-        this.checkValidity();
-      });
-    });
-
-    // Form submission validation
+    // Simplified validation - only check if fields have values
     const form = document.getElementById("loginForm");
     form.addEventListener("submit", function (e) {
-      const isValid = this.checkValidity();
-      if (!isValid) {
+      const email = document.getElementById("account_email").value.trim();
+      const password = document.getElementById("account_password").value;
+      
+      if (!email || !password) {
         e.preventDefault();
-
-        const firstInvalid = this.querySelector(":invalid");
-        if (firstInvalid) {
-          firstInvalid.focus();
-        }
+        alert("Please enter both email and password.");
+        return false;
       }
+      
+      // Basic email format check
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        e.preventDefault();
+        alert("Please enter a valid email address.");
+        document.getElementById("account_email").focus();
+        return false;
+      }
+    });
+
+    // Real-time feedback for email only
+    const emailInput = document.getElementById("account_email");
+    emailInput.addEventListener("input", function () {
+      this.checkValidity();
     });
   });
 </script>
