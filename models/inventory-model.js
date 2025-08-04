@@ -26,6 +26,74 @@ async function getInventoryByClassificationId(classification_id) {
 }
 
 /* ***************************
+ *  Add New Classification
+ * ************************** */
+async function addClassification(classification_name) {
+  try {
+    const sql = "INSERT INTO public.classification (classification_name) VALUES ($1) RETURNING *"
+    const result = await pool.query(sql, [classification_name])
+    return result.rowCount > 0 ? result.rows[0] : false
+  } catch (error) {
+    console.error("addClassification error: " + error)
+    return false
+  }
+}
+
+/* ***************************
+ *  Check for existing classification
+ * ************************** */
+async function checkExistingClassification(classification_name) {
+  try {
+    const sql = "SELECT * FROM public.classification WHERE classification_name = $1"
+    const result = await pool.query(sql, [classification_name])
+    return result.rowCount > 0
+  } catch (error) {
+    console.error("checkExistingClassification error: " + error)
+    return error.message
+  }
+}
+
+/* ***************************
+ *  Add New Inventory Item
+ * ************************** */
+async function addInventory(
+  inv_make,
+  inv_model,
+  inv_year,
+  inv_description,
+  inv_image,
+  inv_thumbnail,
+  inv_price,
+  inv_miles,
+  inv_color,
+  classification_id
+) {
+  try {
+    const sql = `INSERT INTO public.inventory 
+      (inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color, classification_id) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`
+    
+    const result = await pool.query(sql, [
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+      classification_id
+    ])
+    
+    return result.rowCount > 0 ? result.rows[0] : false
+  } catch (error) {
+    console.error("addInventory error: " + error)
+    return false
+  }
+}
+
+/* ***************************
  *  Get inventory item by inventory ID
  * ************************** */
 async function getInventoryById(invId) {
@@ -39,6 +107,7 @@ async function getInventoryById(invId) {
     console.error("getinventorybyid error " + error)
   }
 }
+
 /* ***************************
  *  Update Inventory Data
  * ************************** */
@@ -77,5 +146,12 @@ async function updateInventory(
   }
 }
 
-
-module.exports = {getClassifications, getInventoryByClassificationId, getInventoryById, updateInventory}
+module.exports = {
+  getClassifications, 
+  getInventoryByClassificationId, 
+  getInventoryById, 
+  updateInventory,
+  addClassification, 
+  addInventory,
+  checkExistingClassification
+}
