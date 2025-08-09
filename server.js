@@ -77,6 +77,8 @@ app.use("/inv", inventoryRoute)
 // Account routes
 app.use("/account", require("./routes/accountRoute"));
 
+// Add this line with your other route declarations
+app.use("/reviews", require("./routes/reviewRoutes"))
 
 // Intentional Error Route for testing (before 404 handler)
 app.get("/trigger-error", (req, res, next) => {

@@ -6,9 +6,24 @@
   
   <!-- Update Account Information Link (for all users) -->
   <div class="account-section">
+    <h3>Account Settings</h3>
     <p>
       <a href="/account/update" class="update-link">Update Account Information</a>
     </p>
+  </div>
+
+  <!-- Customer Features Section (for all users) -->
+  <div class="customer-section">
+    <h3>Customer Features</h3>
+    <div class="feature-links">
+      <p>
+        <a href="/reviews/my-reviews" class="reviews-link">
+          <i class="icon">⭐</i>
+          My Vehicle Reviews
+        </a>
+      </p>
+      <p class="feature-description">View and manage your vehicle reviews</p>
+    </div>
   </div>
 
   <!-- Inventory Management Section (Employee/Admin only) -->
@@ -16,80 +31,275 @@
     <div class="inventory-section">
       <h3>Inventory Management</h3>
       <p><a href="/inv/" class="inventory-link">Manage Inventory</a></p>
+      <p class="feature-description">Add, edit, and manage vehicle inventory</p>
     </div>
   <% } %>
 
   <!-- Account Type Display -->
   <div class="account-info">
-    <p><strong>Account Type:</strong> <%= locals.accountData.account_type %></p>
-    <p><strong>Email:</strong> <%= locals.accountData.account_email %></p>
+    <h3>Account Information</h3>
+    <div class="info-grid">
+      <div class="info-item">
+        <strong>Name:</strong> 
+        <%= locals.accountData.account_firstname %> <%= locals.accountData.account_lastname %>
+      </div>
+      <div class="info-item">
+        <strong>Email:</strong> 
+        <%= locals.accountData.account_email %>
+      </div>
+      <div class="info-item">
+        <strong>Account Type:</strong> 
+        <span class="account-type <%= locals.accountData.account_type.toLowerCase() %>">
+          <%= locals.accountData.account_type %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="action-buttons">
+      <a href="/" class="action-btn browse-btn">
+        <i class="icon">🚗</i>
+        Browse Vehicles
+      </a>
+      <a href="/account/logout" class="action-btn logout-btn">
+        <i class="icon">🚪</i>
+        Logout
+      </a>
+    </div>
   </div>
 </div>
 
 <style>
 .account-management-container {
-  max-width: 600px;
+  max-width: 700px;
   margin: 2rem auto;
   padding: 2rem;
   background: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .account-management-container h2 {
-  color: #28a745;
+  color: #2c5530;
   margin-bottom: 1.5rem;
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.2rem;
+  font-weight: 300;
 }
 
 .account-management-container h3 {
-  color: #007bff;
+  color: #333;
   margin-bottom: 1rem;
-  border-bottom: 2px solid #007bff;
+  border-bottom: 2px solid #2c5530;
   padding-bottom: 0.5rem;
+  font-size: 1.3rem;
 }
 
-.account-section, .inventory-section {
+.account-section, 
+.customer-section, 
+.inventory-section {
   margin: 2rem 0;
   padding: 1.5rem;
   background: white;
-  border-radius: 6px;
-  border-left: 4px solid #007bff;
+  border-radius: 8px;
+  border-left: 4px solid #2c5530;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.update-link, .inventory-link {
-  display: inline-block;
+.feature-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.update-link, 
+.inventory-link, 
+.reviews-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: #007bff;
+  background: #2c5530;
   color: white;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  width: fit-content;
 }
 
-.update-link:hover, .inventory-link:hover {
-  background: #0056b3;
+.reviews-link {
+  background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+}
+
+.update-link:hover, 
+.inventory-link:hover {
+  background: #1e3a21;
   text-decoration: none;
   color: white;
+  transform: translateY(-1px);
+}
+
+.reviews-link:hover {
+  background: linear-gradient(135deg, #e0a800 0%, #e67300 100%);
+  text-decoration: none;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.feature-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
 }
 
 .account-info {
   background: white;
   padding: 1.5rem;
-  border-radius: 6px;
+  border-radius: 8px;
   margin-top: 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.account-info p {
-  margin: 0.5rem 0;
+.info-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
   font-size: 1.1rem;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.account-type {
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.account-type.client {
+  background: #d4edda;
+  color: #155724;
+}
+
+.account-type.employee {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.account-type.admin {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.quick-actions {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.browse-btn {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+}
+
+.browse-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+  text-decoration: none;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.logout-btn {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: white;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+  text-decoration: none;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.icon {
+  font-size: 1.2rem;
 }
 
 @media (max-width: 768px) {
   .account-management-container {
     margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .account-management-container h2 {
+    font-size: 1.8rem;
+  }
+  
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .update-link, 
+  .inventory-link, 
+  .reviews-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-management-container {
+    padding: 0.75rem;
+  }
+  
+  .account-section, 
+  .customer-section, 
+  .inventory-section,
+  .account-info,
+  .quick-actions {
     padding: 1rem;
   }
 }

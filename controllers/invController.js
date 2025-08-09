@@ -20,20 +20,46 @@ invCont.buildByClassificationId = async function (req, res, next) {
 }
 
 /* ***************************
- *  Build inventory item detail view
+ *  Build inventory item detail view - UPDATED WITH REVIEWS
  * ************************** */
 invCont.buildByInvId = async function (req, res, next) {
   const inv_id = req.params.invId
   const data = await invModel.getInventoryById(inv_id)
+  
+  // Add review functionality
+  const reviewModel = require("../models/review-model")
+  let reviews = []
+  let averageRating = null
+  let hasUserReviewed = false
+  
+  try {
+    // Get reviews and rating data
+    reviews = await reviewModel.getReviewsByVehicleId(inv_id)
+    averageRating = await reviewModel.getAverageRating(inv_id)
+    
+    // Check if current user has reviewed this vehicle (if logged in)
+    if (res.locals.loggedin && res.locals.accountData) {
+      hasUserReviewed = await reviewModel.checkExistingReview(inv_id, res.locals.accountData.account_id)
+    }
+  } catch (error) {
+    console.error("Error loading review data:", error)
+    // Continue without review data if there's an error
+  }
+  
   const grid = await utilities.buildDetailView(data)
   let nav = await utilities.getNav()
-  const year = data[0].inv_year
-  const make = data[0].inv_make
-  const model = data[0].inv_model
+  const year = data.inv_year
+  const make = data.inv_make
+  const model = data.inv_model
+  
   res.render("./inventory/detail", {
     title: year + " " + make + " " + model,
     nav,
     grid,
+    vehicle: data,        // Pass the vehicle data
+    reviews,             // Pass the reviews
+    averageRating,       // Pass the average rating
+    hasUserReviewed      // Pass whether user has reviewed
   })
 }
 

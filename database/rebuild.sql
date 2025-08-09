@@ -117,7 +117,27 @@ UPDATE public.account
 SET account_type = 'Admin' 
 WHERE account_email = 'manager@340.edu';
 
--- Step 12: Verification queries
+-- Step 12: Create reviews table
+CREATE TABLE IF NOT EXISTS public.reviews (
+    review_id SERIAL PRIMARY KEY,
+    inv_id INTEGER NOT NULL,
+    account_id INTEGER NOT NULL,
+    review_title VARCHAR(100) NOT NULL,
+    review_text TEXT NOT NULL,
+    review_rating INTEGER NOT NULL CHECK (review_rating >= 1 AND review_rating <= 5),
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (inv_id) REFERENCES public.inventory (inv_id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES public.account (account_id) ON DELETE CASCADE,
+    UNIQUE(inv_id, account_id) -- One review per user per vehicle
+);
+
+-- Add some sample data
+INSERT INTO public.reviews (inv_id, account_id, review_title, review_text, review_rating) VALUES
+(1, 1, 'Classic Beauty!', 'This Model T is absolutely gorgeous. Perfect for vintage car shows and weekend drives. The restoration work is top-notch.', 5),
+(2, 1, 'Mystery Machine Magic', 'Bought this for family road trips. Kids love it! Very spacious and the paint job is iconic. Some mechanical issues but worth it for the fun factor.', 4),
+(8, 2, 'Reliable Workhorse', 'Perfect patrol car. Very reliable and comfortable for long shifts. Great visibility and lots of room for equipment.', 4);
+
+-- Step 13: Verification queries
 SELECT '=== DATABASE REBUILD COMPLETE ===' as status;
 
 SELECT 'Classifications created:' as info;
@@ -154,12 +174,3 @@ SELECT COUNT(*) as f150_count FROM public.inventory WHERE inv_image LIKE '%f150%
 
 SELECT '=== READY FOR TESTING ===' as final_status;
 
--- Step 13: Quick test account creation script (alternative approach)
--- If you want to create the test accounts manually later, use these commands:
-/*
-INSERT INTO public.account (account_firstname, account_lastname, account_email, account_password, account_type)
-VALUES
-    ('Basic', 'Client', 'basic@340.edu', 'I@mABas1cCl!3nt', 'Client'),
-    ('Happy', 'Employee', 'happy@340.edu', 'I@mAnEmpl0y33', 'Employee'), 
-    ('Manager', 'User', 'manager@340.edu', 'I@mAnAdm!n1strat0r', 'Admin');
-*/
